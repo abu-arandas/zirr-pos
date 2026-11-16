@@ -73,14 +73,38 @@ export function ReceiptModal({
             className="receipt-card max-w-sm w-full overflow-hidden flex flex-col rounded-3xl"
           >
             <div className="bg-card border-b border-border p-6 text-center flex flex-col items-center relative overflow-hidden">
-              <motion.div
-                initial={{ scale: 0, rotate: -45 }}
-                animate={{ scale: 1, rotate: 0 }}
-                transition={{ type: 'spring', damping: 14, delay: 0.05 }}
-                className="size-12 rounded-full bg-foreground text-background flex items-center justify-center mb-3 shadow-xs"
+              {/* The till's one celebration, on screen only (never printed): a coin drops into the tick, and
+                  "Sold!" pops above the title. Over in about half a second, so the next sale is not kept waiting. */}
+              <div className="relative size-12 mb-3">
+                <motion.span
+                  aria-hidden="true"
+                  className="absolute start-2.5 top-2.5 size-7 rounded-full border-2 shadow-xs"
+                  style={{
+                    background: 'var(--brand-thread)',
+                    borderColor: 'color-mix(in srgb, var(--brand-thread) 70%, black)',
+                  }}
+                  initial={{ y: -48, opacity: 0 }}
+                  animate={{ y: [-48, 0, 0], opacity: [0, 1, 0], scale: [1, 1, 0.5] }}
+                  transition={{ duration: 0.5, times: [0, 0.65, 1], ease: 'easeIn' }}
+                />
+                <motion.div
+                  initial={{ scale: 0, rotate: -45 }}
+                  animate={{ scale: 1, rotate: 0 }}
+                  transition={{ type: 'spring', damping: 12, delay: 0.3 }}
+                  className="relative size-12 rounded-full bg-foreground text-background flex items-center justify-center shadow-xs"
+                >
+                  <Check size={24} strokeWidth={2.5} />
+                </motion.div>
+              </div>
+              <motion.p
+                initial={{ opacity: 0, scale: 0.6 }}
+                animate={{ opacity: 1, scale: 1 }}
+                transition={{ type: 'spring', stiffness: 420, damping: 14, delay: 0.38 }}
+                className="text-sm font-semibold text-primary mb-0.5"
+                aria-hidden="true"
               >
-                <Check size={24} strokeWidth={2.5} />
-              </motion.div>
+                {t('register.sold')}
+              </motion.p>
               <h3
                 id="receipt-modal-title"
                 className="font-semibold text-foreground text-xl tracking-tight mb-1"

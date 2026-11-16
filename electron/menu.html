@@ -111,12 +111,33 @@
       .category-chip.active { background-color: #10b981; color: #022c22; font-weight: 600; }
       #products-container { display: flex; flex-direction: column; gap: 16px; }
       @keyframes fadeIn {
-        from { opacity: 0; transform: translateY(10px); }
-        to { opacity: 1; transform: translateY(0); }
+        /* Moves with translate, not transform, so a card that has come in can still lift under the mouse. */
+        from { opacity: 0; translate: 0 10px; }
+        to { opacity: 1; translate: none; }
       }
-      .animate-fade-in { animation: fadeIn 0.4s ease-out forwards; }
-      .product-card { border-radius: 16px; overflow: hidden; display: flex; opacity: 0; }
-      .product-thumb { width: 112px; height: 112px; flex-shrink: 0; position: relative; }
+      .animate-fade-in { animation: fadeIn 0.45s cubic-bezier(0.05, 0.7, 0.1, 1) forwards; }
+      .product-card {
+        border-radius: 16px;
+        overflow: hidden;
+        display: flex;
+        opacity: 0;
+        transition: transform 0.2s cubic-bezier(0.2, 0, 0, 1), box-shadow 0.2s cubic-bezier(0.2, 0, 0, 1);
+      }
+      /* A card gives a little under a finger, and lifts (its picture leaning in) under a mouse. */
+      .product-card:active { transform: scale(0.98); }
+      .product-thumb img { transition: transform 0.4s cubic-bezier(0.2, 0, 0, 1); }
+      @media (hover: hover) {
+        .product-card:hover { transform: translateY(-3px); box-shadow: 0 14px 36px rgba(0, 0, 0, 0.4); }
+        .product-card:hover .product-thumb img { transform: scale(1.05); }
+      }
+      /* The chosen category pops; every chip gives when pressed. */
+      @keyframes pop { 0% { transform: scale(1); } 40% { transform: scale(1.12); } 100% { transform: scale(1); } }
+      .category-chip:active { transform: scale(0.95); }
+      .category-chip.active { animation: pop 0.35s cubic-bezier(0.34, 1.56, 0.64, 1); }
+      @keyframes wiggle { 20% { transform: rotate(-12deg); } 40% { transform: rotate(10deg); } 60% { transform: rotate(-6deg); } 80% { transform: rotate(3deg); } }
+      .empty-state .icon { display: inline-block; animation: wiggle 0.7s ease 0.2s; }
+      .loading-line { color: #94a3b8; font-size: 14px; margin-top: 12px; text-align: center; }
+      .product-thumb { width: 112px; height: 112px; flex-shrink: 0; position: relative; overflow: hidden; }
       .product-thumb img { width: 100%; height: 100%; object-fit: cover; display: block; }
       .thumb-fallback {
         width: 100%;
@@ -184,6 +205,12 @@
         border-bottom-color: #10b981;
         animation: spin 1s linear infinite;
       }
+      @media (prefers-reduced-motion: reduce) {
+        body { animation: none; }
+        .product-card, .animate-fade-in { opacity: 1 !important; animation: none !important; transition: none; }
+        .category-chip.active, .empty-state .icon, .spinner { animation: none; }
+        .product-card, .product-thumb img, .category-chip { transform: none !important; transition: none !important; }
+      }
       .retry-btn {
         margin-top: 16px;
         padding: 8px 16px;
@@ -225,7 +252,10 @@
 
       <!-- Products -->
       <div id="products-container">
-        <div class="spinner-wrap"><div class="spinner"></div></div>
+        <div class="spinner-wrap" style="flex-direction: column">
+          <div class="spinner"></div>
+          <p class="loading-line">Setting the table…</p>
+        </div>
       </div>
     </main>
 
@@ -367,14 +397,15 @@
             <div class="empty-state animate-fade-in" style="opacity: 1;">
               <div class="icon">🍽️</div>
               <h3>No items found</h3>
-              <p>Try selecting a different category or search term.</p>
+              <p>The chef suggests another category or search.</p>
             </div>`;
           return;
         }
 
-        let delay = 0;
+        // The first few cards come in a step apart; the rest follow at once, so a long menu never waits.
         const html = filtered
-          .map((product) => {
+          .map((product, i) => {
+            const delay = Math.min(i, 8) * 0.05;
             const name = esc(product.name);
             const isTailwindColor = product.image && String(product.image).startsWith('bg-');
             let imgContent = '';
@@ -389,7 +420,6 @@
             const catName =
               allCategories.find((c) => c.id === product.category)?.name || 'Uncategorized';
 
-            delay += 0.05;
 
             return `
               <div class="product-card glass animate-fade-in" style="animation-delay: ${delay}s; animation-fill-mode: forwards;">
