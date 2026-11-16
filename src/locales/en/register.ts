@@ -67,6 +67,7 @@ export const register = {
   phoneNumber: 'Phone Number',
   emailAddress: 'Email Address',
   saveLink: 'Save & Link',
+  sold: 'Sold!',
   paymentSuccessful: 'Payment Successful!',
   receipt: 'Receipt',
   operator: 'OPERATOR',

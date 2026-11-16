@@ -66,6 +66,7 @@ export const register = {
   phoneNumber: 'رقم الهاتف',
   emailAddress: 'عنوان البريد الإلكتروني',
   saveLink: 'حفظ وربط',
+  sold: 'انباعت!',
   paymentSuccessful: 'تم الدفع بنجاح!',
   receipt: 'إيصال',
   operator: 'الموظف',
