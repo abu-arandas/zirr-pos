@@ -60,12 +60,19 @@
         justify-content: center;
       }
       .logo-wrap.visible { display: flex; }
+      .header-end { display: flex; align-items: center; gap: 10px; }
+      /* The guest's own switch between English and Arabic. */
+      .lang-btn {
+        min-width: 44px; height: 36px; padding: 0 12px; border-radius: 9999px; border: 1px solid #334155;
+        background: rgba(30, 41, 59, 0.6); color: #e2e8f0; font: inherit; font-size: 14px; cursor: pointer;
+      }
+      .lang-btn:active { transform: scale(0.95); }
       .logo-wrap img { height: 100%; width: 100%; object-fit: cover; }
       main { padding: 0 16px; max-width: 448px; margin: 0 auto; }
       .search-wrap { position: relative; margin-bottom: 24px; }
       .search-wrap svg {
         position: absolute;
-        left: 12px;
+        inset-inline-start: 12px;
         top: 50%;
         transform: translateY(-50%);
         width: 20px;
@@ -77,7 +84,8 @@
         background: rgba(30, 41, 59, 0.5);
         border: 1px solid #334155;
         border-radius: 16px;
-        padding: 12px 16px 12px 40px;
+        padding-block: 12px;
+        padding-inline: 40px 16px;
         font-size: 14px;
         color: #fff;
         outline: none;
@@ -228,11 +236,14 @@
     <!-- Header -->
     <header class="app-header glass">
       <div>
-        <h1 id="store-name" class="header-title">Loading...</h1>
-        <p class="header-sub">Digital Menu</p>
+        <h1 id="store-name" class="header-title" data-t="loading">Loading…</h1>
+        <p class="header-sub" data-t="digitalMenu">Digital Menu</p>
       </div>
-      <div id="store-logo-container" class="logo-wrap">
-        <img id="store-logo" src="" alt="Logo" />
+      <div class="header-end">
+        <button id="lang-btn" class="lang-btn" type="button"></button>
+        <div id="store-logo-container" class="logo-wrap">
+          <img id="store-logo" src="" alt="" />
+        </div>
       </div>
     </header>
 
@@ -242,7 +253,7 @@
         <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
         </svg>
-        <input type="text" id="search-input" placeholder="Search menu..." />
+        <input type="text" id="search-input" placeholder="Search menu…" data-t-placeholder="search" />
       </div>
 
       <!-- Categories -->
@@ -254,12 +265,68 @@
       <div id="products-container">
         <div class="spinner-wrap" style="flex-direction: column">
           <div class="spinner"></div>
-          <p class="loading-line">Setting the table…</p>
+          <p class="loading-line" data-t="settingTable">Setting the table…</p>
         </div>
       </div>
     </main>
 
     <script>
+      // Every word the guest reads, in English and Arabic. The menu opens in the language of the guest's phone and
+      // the button in the header switches it. Dish and category names come from the till as they were typed.
+      const TEXT = {
+        en: {
+          title: 'Our Digital Menu', loading: 'Loading…', digitalMenu: 'Digital Menu', search: 'Search menu…',
+          settingTable: 'Setting the table…', loadError: 'Error loading menu', couldNotLoad: 'Could not load the menu.',
+          retry: 'Retry', ourMenu: 'Our Menu', all: 'All Items', noItems: 'No items found',
+          chefSuggests: 'The chef suggests another category or search.', uncategorised: 'Uncategorized',
+          soldOut: 'SOLD OUT', from: 'from ', switchTo: 'عربي', switchLabel: 'اعرض القائمة بالعربية',
+        },
+        ar: {
+          title: 'قائمتنا الرقمية', loading: 'لحظة…', digitalMenu: 'القائمة الرقمية', search: 'ابحث في القائمة…',
+          settingTable: 'عم نجهّز الطاولة…', loadError: 'تعذّر تحميل القائمة', couldNotLoad: 'لم نتمكّن من تحميل القائمة.',
+          retry: 'حاول مرة أخرى', ourMenu: 'قائمتنا', all: 'الكل', noItems: 'ما في أصناف',
+          chefSuggests: 'الشيف بيقترح تجرّب قسم ثاني أو بحث ثاني.', uncategorised: 'بدون قسم',
+          soldOut: 'نفدت الكمية', from: 'من ', switchTo: 'EN', switchLabel: 'Show the menu in English',
+        },
+      };
+      let lang = 'en';
+      try {
+        const saved = localStorage.getItem('menu-lang');
+        lang = saved === 'ar' || saved === 'en' ? saved : /^ar\b/i.test(navigator.language || '') ? 'ar' : 'en';
+      } catch {
+        lang = /^ar\b/i.test(navigator.language || '') ? 'ar' : 'en';
+      }
+      const t = (key) => TEXT[lang][key];
+
+      function applyLanguage() {
+        document.documentElement.lang = lang;
+        document.documentElement.dir = lang === 'ar' ? 'rtl' : 'ltr';
+        document.title = t('title');
+        document.querySelectorAll('[data-t]').forEach((el) => (el.textContent = t(el.dataset.t)));
+        document.querySelectorAll('[data-t-placeholder]').forEach((el) => (el.placeholder = t(el.dataset.tPlaceholder)));
+        const button = document.getElementById('lang-btn');
+        button.textContent = t('switchTo');
+        button.setAttribute('aria-label', t('switchLabel'));
+        button.lang = lang === 'ar' ? 'en' : 'ar';
+      }
+
+      document.getElementById('lang-btn').addEventListener('click', () => {
+        lang = lang === 'ar' ? 'en' : 'ar';
+        try {
+          localStorage.setItem('menu-lang', lang);
+        } catch {
+          // A private window may refuse; the switch still works for this visit.
+        }
+        applyLanguage();
+        if (menuLoaded) {
+          renderHeader();
+          renderCategories();
+          renderProducts();
+        }
+      });
+      let menuLoaded = false;
+      applyLanguage();
+
       let allProducts = [];
       let allCategories = [];
       let storeSettings = {};
@@ -309,25 +376,31 @@
           allCategories = data.categories || [];
           storeSettings = data.settings || {};
 
+          menuLoaded = true;
           initUI();
         } catch (err) {
           console.error('Failed to load menu', err);
-          document.getElementById('store-name').textContent = 'Error loading menu';
+          document.getElementById('store-name').textContent = t('loadError');
           const container = document.getElementById('products-container');
           container.innerHTML =
-            '<div class="empty-state"><p>Could not load the menu.</p></div>';
+            `<div class="empty-state"><p>${esc(t('couldNotLoad'))}</p></div>`;
           const retry = document.createElement('button');
           retry.className = 'retry-btn';
-          retry.textContent = 'Retry';
+          retry.textContent = t('retry');
           retry.addEventListener('click', fetchMenu);
           container.querySelector('.empty-state').appendChild(retry);
         }
       }
 
-      function initUI() {
+      function renderHeader() {
         // Header (textContent — no markup interpretation)
-        document.getElementById('store-name').textContent =
-          storeSettings.storeName || 'Our Menu';
+        const title = document.getElementById('store-name');
+        title.removeAttribute('data-t');
+        title.textContent = storeSettings.storeName || t('ourMenu');
+      }
+
+      function initUI() {
+        renderHeader();
         const storeLogo = safeImageUrl(storeSettings.storeLogo);
         if (storeLogo) {
           const logoContainer = document.getElementById('store-logo-container');
@@ -359,7 +432,7 @@
           return btn;
         };
 
-        container.appendChild(makeChip('all', 'All Items'));
+        container.appendChild(makeChip('all', t('all')));
         allCategories.forEach((cat) => container.appendChild(makeChip(cat.id, cat.name)));
       }
 
@@ -396,8 +469,8 @@
           container.innerHTML = `
             <div class="empty-state animate-fade-in" style="opacity: 1;">
               <div class="icon">🍽️</div>
-              <h3>No items found</h3>
-              <p>The chef suggests another category or search.</p>
+              <h3>${esc(t('noItems'))}</h3>
+              <p>${esc(t('chefSuggests'))}</p>
             </div>`;
           return;
         }
@@ -418,21 +491,21 @@
             }
 
             const catName =
-              allCategories.find((c) => c.id === product.category)?.name || 'Uncategorized';
+              allCategories.find((c) => c.id === product.category)?.name || t('uncategorised');
 
 
             return `
               <div class="product-card glass animate-fade-in" style="animation-delay: ${delay}s; animation-fill-mode: forwards;">
                 <div class="product-thumb">
                   ${imgContent}
-                  ${product.inStock === false ? '<div class="soldout-overlay"><span class="soldout-badge">SOLD OUT</span></div>' : ''}
+                  ${product.inStock === false ? `<div class="soldout-overlay"><span class="soldout-badge">${esc(t('soldOut'))}</span></div>` : ''}
                 </div>
                 <div class="product-body">
                   <div>
                     <div class="product-top">
                       <h3 class="product-name">${name}</h3>
-                      <span class="product-price">${
-                        product.priceFrom ? 'from ' : ''
+                      <span class="product-price" dir="ltr">${
+                        product.priceFrom ? esc(t('from')) : ''
                       }${esc(formatCurrency(product.price))}</span>
                     </div>
                     <span class="product-cat">${esc(catName)}</span>
