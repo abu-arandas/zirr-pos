@@ -239,6 +239,15 @@ jobs:
           name: Zirr-POS-Windows-Installer
           path: release
 
+      # Only the hand-written notes for this version are needed, read from the
+      # same commit the installer was built from.
+      - uses: actions/checkout@v5
+        with:
+          ref: ${{ github.sha }}
+          path: src
+          sparse-checkout: release-notes
+          persist-credentials: false
+
       - name: Publish GitHub release with installer
         shell: bash
         env:
@@ -298,10 +307,20 @@ jobs:
           fi
 
           checksums=$(cat release/SHA256SUMS.txt)
+          # Hand-written notes for this version (release-notes/<version>.md),
+          # when there are any, go above the generated text.
+          whats_new=""
+          if [[ -f "src/release-notes/${version}.md" ]]; then
+            whats_new="$(cat "src/release-notes/${version}.md")
+
+          ---
+
+          "
+          fi
           if [[ "$SIGNED" == "true" ]]; then
             title="Zirr POS ${version}"
             prerelease=""
-            notes="Signed Windows installer for version ${version}, built from ${GITHUB_SHA}.
+            notes="${whats_new}Signed Windows installer for version ${version}, built from ${GITHUB_SHA}.
 
           Code signing: \`${SIGNING_MODE}\`. The Authenticode signature was verified on the runner before publishing.
 
@@ -317,7 +336,7 @@ jobs:
           else
             title="Zirr POS ${version} (unsigned test build)"
             prerelease="--prerelease"
-            notes="**This installer is UNSIGNED.** Windows SmartScreen will warn that the publisher is unrecognised, and Chrome/Edge may block the download. It is published for internal testing only — do not distribute it to customers.
+            notes="${whats_new}**This installer is UNSIGNED.** Windows SmartScreen will warn that the publisher is unrecognised, and Chrome/Edge may block the download. It is published for internal testing only — do not distribute it to customers.
 
           Built from ${GITHUB_SHA}. Marked as a pre-release so electron-updater does not offer it to installed terminals.
 
