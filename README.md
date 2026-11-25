@@ -1,6 +1,8 @@
 # Zirr POS · زِرّ كاشير
 
-A point-of-sale system for a shop or a small restaurant, by [Zirr](https://www.facebook.com/1294898037048567), Ehab Arandas's studio in Amman.
+**Zirr by [Arandas Tech](https://zirr-site.vercel.app)**, a software company in Amman, Jordan.
+
+A point-of-sale system for a shop or a small restaurant.
 It runs in a browser and ships as a standalone Windows desktop application.
 
 **[Open it in your browser](https://pos-sage-one.vercel.app)**, no install. It starts like a new terminal:
@@ -473,8 +475,8 @@ Motion · Recharts · @dnd-kit · Lucide · Supabase JS · Electron 43 · electr
 
 ## License
 
-Copyright © 2026 Zirr (Ehab Arandas). All rights reserved.
+Copyright © 2026 Arandas Tech (Ehab Arandas). All rights reserved.
 
 The source is published so you can read it and try it in your browser. Using it in a business, selling it, or
-shipping it to a client needs a licence from Zirr:
+shipping it to a client needs a licence from Arandas Tech:
 [ask on WhatsApp](https://wa.me/962791568798?text=Hi%20Zirr%2C%20I%20would%20like%20a%20Zirr%20POS%20licence.).
