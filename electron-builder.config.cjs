@@ -25,7 +25,7 @@ module.exports = {
   // old EA POS install in place instead of installing a second copy.
   appId: 'com.eapos.app',
   productName: 'Zirr POS',
-  copyright: 'Copyright © 2026 Zirr (Ehab Arandas)',
+  copyright: 'Copyright © 2026 Arandas Tech (Ehab Arandas)',
   artifactName: 'Zirr-POS-Setup-${version}.${ext}',
   directories: {
     output: 'release',
