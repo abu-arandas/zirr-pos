@@ -1,6 +1,6 @@
 # Zirr POS · زِرّ كاشير
 
-**Zirr by [Arandas Tech](https://zirr-site.vercel.app)**, a software company in Amman, Jordan.
+**Zirr by [Arandas Tech](https://arandas.tech)**, a software company in Amman, Jordan.
 
 A point-of-sale system for a shop or a small restaurant.
 It runs in a browser and ships as a standalone Windows desktop application.
