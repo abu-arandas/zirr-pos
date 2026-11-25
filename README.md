@@ -12,7 +12,7 @@ Everything stays in that browser until you link it to your own Supabase project.
 > **Want it running in your shop or café in Amman?** We install it on your PC, set up your menu in
 > Arabic and English, connect your receipt printer and train your staff. 14-day free trial, then
 > 299 JOD one-off with no monthly fee and 3 months of WhatsApp support.
-> [Message us on WhatsApp](https://wa.me/962791568798?text=Hi%20Zirr%2C%20I%20saw%20Zirr%20POS%20on%20GitHub%20and%20would%20like%20a%20free%20trial.)
+> [Message us on WhatsApp](https://wa.me/962791568798?text=Hi%20Arandas%20Tech%20team%2C%20I%20saw%20Zirr%20POS%20on%20GitHub%20and%20would%20like%20a%20free%20trial.)
 
 Built with React 19, Vite, Tailwind CSS v4, Zustand and Electron. It works **offline first** —
 every sale is committed locally before anything touches the network — with optional Supabase
@@ -479,4 +479,4 @@ Copyright © 2026 Arandas Tech (Ehab Arandas). All rights reserved.
 
 The source is published so you can read it and try it in your browser. Using it in a business, selling it, or
 shipping it to a client needs a licence from Arandas Tech:
-[ask on WhatsApp](https://wa.me/962791568798?text=Hi%20Zirr%2C%20I%20would%20like%20a%20Zirr%20POS%20licence.).
+[ask on WhatsApp](https://wa.me/962791568798?text=Hi%20Arandas%20Tech%20team%2C%20I%20would%20like%20a%20Zirr%20POS%20licence.).
