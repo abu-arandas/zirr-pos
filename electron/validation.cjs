@@ -141,6 +141,23 @@ function isSafeMenuData(data) {
   );
 }
 
+// Which links the app may hand to the operating system with shell.openExternal.
+// The OS opens whatever it is given with its registered handler, so a file: URL
+// runs a program on the till, a UNC path (file://server/share) sends the
+// Windows login to that server, and schemes like ms-msdt: or search-ms: have
+// been used to run code. The app only ever opens web pages (WhatsApp, the
+// updates page) and mail links, so those are the only schemes let through.
+const EXTERNAL_PROTOCOLS = new Set(['https:', 'http:', 'mailto:']);
+
+function isSafeExternalUrl(rawUrl) {
+  if (typeof rawUrl !== 'string' || rawUrl.length > 8192) return false;
+  try {
+    return EXTERNAL_PROTOCOLS.has(new URL(rawUrl).protocol);
+  } catch {
+    return false;
+  }
+}
+
 module.exports = {
   MAX_MENU_DATA_BYTES,
   MAX_MENU_RECORDS,
@@ -154,4 +171,5 @@ module.exports = {
   isValidRawBytes,
   isValidPrinterPayload,
   isSafeMenuData,
+  isSafeExternalUrl,
 };
