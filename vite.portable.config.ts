@@ -10,6 +10,11 @@ import { viteSingleFile } from 'vite-plugin-singlefile';
 
 export default defineConfig({
   base: './',
+  // Must match vite.config.ts: the version error reports are filed under
+  // (lib/errorReports).
+  define: {
+    'import.meta.env.VITE_APP_VERSION': JSON.stringify(process.env.npm_package_version ?? 'dev'),
+  },
   plugins: [react(), tailwindcss(), viteSingleFile()],
   build: {
     outDir: 'portable',

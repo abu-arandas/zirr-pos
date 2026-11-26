@@ -172,6 +172,18 @@ installer. That logic is in `electron/windowsSigning.cjs`, and the Windows workf
 signing mode through the same module the build uses, so CI can never disagree with
 electron-builder about whether a build is signed.
 
+#### Error reports
+
+A build made with `VITE_SENTRY_DSN` set to a [Sentry](https://sentry.io) project's DSN (project
+Settings, Client Keys) sends every error the till did not catch to that project, filed under
+`zirr-pos@<version>`: `VITE_SENTRY_DSN=https://...ingest.sentry.io/... npm run electron:build`. The
+Windows workflow takes it from the repository variable `SENTRY_DSN` (Settings, Secrets and
+variables, Actions, Variables). Without it nothing is sent, and Sentry's code is never loaded.
+
+A report carries the error, its stack and the device; never who is signed in, cookies, headers or
+what was typed (`src/lib/errorReports.ts`). Sentry also sees the till's IP address: turn on
+"Prevent Storing of IP Addresses" in the project's Security & Privacy settings so it keeps none.
+
 #### Publishing a release
 
 A release is cut by bumping `version` in `package.json`; the tag is `v<version>`. A push to `main`
