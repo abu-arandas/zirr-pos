@@ -180,7 +180,7 @@ Settings, Client Keys) sends every error the till did not catch to that project,
 Windows workflow takes it from the repository variable `SENTRY_DSN` (Settings, Secrets and
 variables, Actions, Variables). Without it nothing is sent, and Sentry's code is never loaded.
 
-A report carries the error, the screen and the device; never who is signed in, cookies, headers or
+A report carries the error, its stack and the device; never who is signed in, cookies, headers or
 what was typed (`src/lib/errorReports.ts`). Sentry also sees the till's IP address: turn on
 "Prevent Storing of IP Addresses" in the project's Security & Privacy settings so it keeps none.
 
