@@ -15,6 +15,7 @@ const {
   isValidPrinterPayload,
   isSafeMenuData,
   isPrivateIPv4,
+  isSafeExternalUrl,
 } = require('./validation.cjs');
 
 // Keep the data folder the app had as "EA POS". Electron names it after the
@@ -615,11 +616,22 @@ function isInternal(rawUrl) {
   }
 }
 
+// A link that leaves the app opens in the default browser, but only a web page
+// or a mail link: see isSafeExternalUrl. Anything else (a file: path outside
+// the app, a UNC share, a custom scheme) is dropped and logged.
+function openOutside(url) {
+  if (isSafeExternalUrl(url)) {
+    shell.openExternal(url);
+  } else {
+    console.warn('Refused to open a link outside the app:', String(url).slice(0, 200));
+  }
+}
+
 app.on('web-contents-created', (_event, contents) => {
   contents.on('will-navigate', (event, url) => {
     if (!isInternal(url)) {
       event.preventDefault();
-      shell.openExternal(url);
+      openOutside(url);
     }
   });
 
@@ -649,7 +661,7 @@ app.on('web-contents-created', (_event, contents) => {
       };
     }
     if (isInternal(url)) return { action: 'allow' };
-    shell.openExternal(url);
+    openOutside(url);
     return { action: 'deny' };
   });
 
