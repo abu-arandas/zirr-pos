@@ -6,6 +6,11 @@ import { defineConfig } from 'vite';
 export default defineConfig(() => {
   return {
     base: './',
+    define: {
+      // The version error reports are filed under (lib/errorReports). npm sets it
+      // for every `npm run` script.
+      'import.meta.env.VITE_APP_VERSION': JSON.stringify(process.env.npm_package_version ?? 'dev'),
+    },
     plugins: [react(), tailwindcss()],
     build: {
       rollupOptions: {

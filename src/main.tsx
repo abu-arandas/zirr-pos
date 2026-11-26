@@ -5,6 +5,10 @@ import App from './App.tsx';
 import './index.css';
 import { CustomerDisplay } from './components/CustomerDisplay';
 import { ErrorBoundary } from './components/ErrorBoundary';
+import { startErrorReports } from './lib/errorReports';
+
+// Off unless the build was given a Sentry project (lib/errorReports).
+void startErrorReports();
 
 // Dark-first by default so the semantic tokens resolve to their dark values on
 // the very first paint (no flash of a light theme before the persisted store

@@ -125,6 +125,10 @@ jobs:
           fi
 
       - name: Build renderer (Vite)
+        # The repository variable SENTRY_DSN, when set, turns on error reports
+        # (README, "Error reports"). Unset, the build sends nothing.
+        env:
+          VITE_SENTRY_DSN: ${{ vars.SENTRY_DSN }}
         run: npm run build
 
       - name: Package Windows installer (electron-builder)

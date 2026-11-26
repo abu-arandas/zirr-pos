@@ -1,5 +1,6 @@
 import { Component, ErrorInfo, ReactNode } from 'react';
 import { AlertTriangle, RefreshCw } from 'lucide-react';
+import { reportError } from '../lib/errorReports';
 import i18n from '../lib/i18n';
 
 interface Props {
@@ -28,6 +29,7 @@ export class ErrorBoundary extends Component<Props, State> {
 
   public override componentDidCatch(error: Error, errorInfo: ErrorInfo) {
     console.error('Uncaught error:', error, errorInfo);
+    reportError(error, errorInfo.componentStack ?? undefined);
   }
 
   private handleReload = () => {
