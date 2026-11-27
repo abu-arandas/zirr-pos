@@ -241,7 +241,7 @@ export default function Sidebar({ currentScreen, setScreen, isSuperadmin }: Side
                 <p className="text-zinc-900 dark:text-zinc-100 text-xs font-semibold truncate leading-tight">
                   {currentUser.name.split(' ')[0]}
                 </p>
-                <span className="text-[9px] font-mono text-zinc-500 dark:text-zinc-400 uppercase tracking-wide inline-block">
+                <span className="text-[9px] font-mono text-zinc-600 dark:text-zinc-400 uppercase tracking-wide inline-block">
                   {currentUser.role}
                 </span>
               </div>

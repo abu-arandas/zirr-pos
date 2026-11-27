@@ -226,9 +226,7 @@ const CartPanel = ({
                 <ShoppingCart size={20} className="text-muted-foreground" />
               </div>
               <p className="text-muted-foreground text-xs font-medium">{t('register.cartEmpty')}</p>
-              <p className="text-muted-foreground/70 text-[11px] mt-0.5">
-                {t('register.tapToAdd')}
-              </p>
+              <p className="text-muted-foreground text-[11px] mt-0.5">{t('register.tapToAdd')}</p>
             </motion.div>
           ) : (
             cart.map((item) => {

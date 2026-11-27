@@ -465,6 +465,28 @@ input[type='number'] {
   border: 1px solid rgba(139, 92, 246, 0.24);
 }
 
+/* The badge text above is the 400 shade, made for the dark theme. On the light
+   theme it would fall well below the 4.5:1 contrast WCAG AA asks for, so the
+   light theme uses the 700 shade instead. */
+html:not(.dark) .badge-emerald {
+  color: #047857;
+}
+html:not(.dark) .badge-rose {
+  color: #be123c;
+}
+html:not(.dark) .badge-amber {
+  color: #b45309;
+}
+html:not(.dark) .badge-blue {
+  color: #1d4ed8;
+}
+html:not(.dark) .badge-slate {
+  color: #475569;
+}
+html:not(.dark) .badge-purple {
+  color: #6d28d9;
+}
+
 /* ─── Sync / connectivity state badges ────────────────────────────────────── */
 
 /* Base shared styles — each modifier provides the three color values. */

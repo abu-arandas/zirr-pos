@@ -519,10 +519,12 @@ const ProductGrid = ({
               className="h-64 flex flex-col items-center justify-center text-center"
             >
               <span className="text-5xl mb-4 animate-float-slow">🔍</span>
-              <p className="text-slate-500 dark:text-slate-400 text-sm font-semibold">
+              <p className="text-slate-600 dark:text-slate-400 text-sm font-semibold">
                 {t('register.noProducts')}
               </p>
-              <p className="text-slate-600 text-xs mt-1">{t('register.tryDifferentSearch')}</p>
+              <p className="text-slate-600 dark:text-slate-400 text-xs mt-1">
+                {t('register.tryDifferentSearch')}
+              </p>
             </motion.div>
           ) : (
             <DndContext
