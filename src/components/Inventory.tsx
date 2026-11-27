@@ -610,6 +610,7 @@ export default function Inventory() {
           {currentTab === 'products' && (
             <button
               id="receive-stock-btn"
+              aria-label={t('inventory.receiveStock')}
               onClick={() => {
                 setRecvProductId(products[0]?.id || '');
                 setReceiveOpen(true);
